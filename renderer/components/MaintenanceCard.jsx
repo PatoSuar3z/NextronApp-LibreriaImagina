@@ -54,7 +54,7 @@ const MaintenanceCard = () => {
   );
 
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 gap-4">
       <Card>
         <CardBody>
           <h2 className="text-lg font-bold mb-4">Pendientes</h2>
@@ -91,41 +91,53 @@ const MaintenanceCard = () => {
         </CardBody>
       </Card>
 
-      <Card>
-        <CardBody>
-          <h2 className="text-lg font-bold mb-4">Finalizadas</h2>
-          <div className="flex items-center mb-4">
-            <label htmlFor="search" className="mr-2">
-              Buscar por ID:
-            </label>
-            <input
-              type="text"
-              id="search"
-              className="border border-gray-300 rounded px-2 py-1"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <table className="table-auto">
-            <thead>
+      <div className="col-span-2">
+        <h2 className="text-lg font-bold mb-4">Finalizadas</h2>
+        <div className="flex items-center mb-4">
+          <label htmlFor="search" className="mr-2">
+            Buscar por ID:
+          </label>
+          <input
+            type="text"
+            id="search"
+            className="border border-gray-300 rounded px-2 py-1"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-2">ID</th>
-                <th className="px-4 py-2">Solicitud</th>
-                <th className="px-4 py-2">Descripción</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ID
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Solicitud
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Descripción
+                </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="bg-white divide-y divide-gray-200">
               {filteredCompletedRequests.map((request) => (
                 <tr key={request.id}>
-                  <td className="border px-4 py-2">{request.id}</td>
-                  <td className="border px-4 py-2">{request.title}</td>
-                  <td className="border px-4 py-2">{request.description}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{request.id}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{request.title}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{request.description}</div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </CardBody>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
-import Link from "next/link";
-import LoginForm from "./forms/LoginForm";
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import LoginForm from './forms/LoginForm'
 
 const Login = (props) => {
   return (
@@ -29,7 +29,6 @@ const Login = (props) => {
           {/* Formulario */}
           <LoginForm onLogin={props.onLogin} />
 
-
           <p className="mt-5 text-xs text-[#593535] border-b border-[#593535] py-4 ">
             ¿Olvidó su contraseña?
           </p>
@@ -44,16 +43,16 @@ const Login = (props) => {
           </div>
         </div>
         <Link href="/perfil">
-              <button className="py-2 px-6 bg-[#593535] border rounded-xl hover:scale-110 duration-300">
-                Perfil
-              </button>
-            </Link>
+          <button className="py-2 px-6 bg-[#593535] border rounded-xl hover:scale-110 duration-300">
+            Perfil
+          </button>
+        </Link>
         <div className="md:block hidden w-1/2">
           <img className="rounded-2xl" src="/img/li-login.png" alt="" />
         </div>
       </motion.div>
     </section>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login
