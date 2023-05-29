@@ -22,7 +22,7 @@ import Books from './Books'
 import BooksAlphillia from './BooksAlphillia'
 
 export default function ListaTable() {
-    const [alphilliaBooks, setAlphilliaBooks] = useState([]);
+    const [alphilliaBooks, setAlphilliaBooks] = useState([])
     const [books, setBooks] = useState([])
     const [newBook, setNewBook] = useState({
         isbn: '',
@@ -53,6 +53,7 @@ export default function ListaTable() {
         stock: true,
     })
     const [searchTerm, setSearchTerm] = useState('')
+    const [alphilliaSearchTerm, setAlphilliaSearchTerm] = useState('')
 
     ///GET BACKEND
 
@@ -83,25 +84,27 @@ export default function ListaTable() {
         fetchBooks()
     }, [])
 
-
-    ///GET API ALPHILLIA 
+    ///GET API ALPHILLIA
 
     const fetchAlphilliaBooks = async () => {
-      try {
-        const response = await axios.get('http://localhost:9001/books');
-        if (Array.isArray(response.data)) {
-          setAlphilliaBooks(response.data);
-        } else {
-          console.log('La respuesta de la API no es un array válido:', response.data);
+        try {
+            const response = await axios.get('http://localhost:9001/books')
+            if (Array.isArray(response.data)) {
+                setAlphilliaBooks(response.data)
+            } else {
+                console.log(
+                    'La respuesta de la API no es un array válido:',
+                    response.data
+                )
+            }
+        } catch (error) {
+            console.log(error)
         }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-  
+    }
+
     useEffect(() => {
-      fetchAlphilliaBooks();
-    }, []);
+        fetchAlphilliaBooks()
+    }, [])
 
     const addBook = async () => {
         // Validar los campos antes de agregar el libro
@@ -166,6 +169,17 @@ export default function ListaTable() {
             )
         })
     }
+
+    const filterAlphilliaBooks = () => {
+      return alphilliaBooks.filter((book) => {
+          const { titulo, isbn } = book;
+          const lowerCaseSearchTerm = alphilliaSearchTerm.toLowerCase();
+          return (
+              titulo?.toLowerCase().includes(lowerCaseSearchTerm) ||
+              isbn?.toString().toLowerCase().includes(lowerCaseSearchTerm)
+          );
+      });
+  };
 
     const TABLE_HEAD = ['Libro', 'isbn', 'Stock', 'Precio', 'Editar']
 
@@ -447,10 +461,9 @@ export default function ListaTable() {
                 </CardFooter>
             </Card>
 
-          {/* Card Alphillia  */}  
+            {/* Card Alphillia  */}
 
-
-          <Card className="mt-8">
+            <Card className="mt-8">
                 <CardHeader
                     floated={false}
                     shadow={false}
@@ -474,9 +487,9 @@ export default function ListaTable() {
                                     icon={
                                         <MagnifyingGlassIcon className="h-5 w-5" />
                                     }
-                                    value={searchTerm}
+                                    value={alphilliaSearchTerm}
                                     onChange={(e) =>
-                                        setSearchTerm(e.target.value)
+                                        setAlphilliaSearchTerm(e.target.value)
                                     }
                                     className="py-2 pr-2 pl-8"
                                 />
@@ -505,7 +518,7 @@ export default function ListaTable() {
                             </tr>
                         </thead>
                         <tbody>
-                            <BooksAlphillia alphilliaBooks={ alphilliaBooks } />
+                            <BooksAlphillia alphilliaBooks={filterAlphilliaBooks()} />
                         </tbody>
                     </table>
                 </CardBody>
@@ -548,7 +561,6 @@ export default function ListaTable() {
                     </Button>
                 </CardFooter>
             </Card>
-
         </div>
     )
 }
