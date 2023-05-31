@@ -1,4 +1,4 @@
-import { DarkContext } from '@/context/darkMode'
+import { DarkContext } from '../context/darkMode'
 import { useContext } from 'react'
 
 export function useDark() {
