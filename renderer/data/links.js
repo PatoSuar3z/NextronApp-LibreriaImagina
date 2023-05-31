@@ -8,8 +8,8 @@ ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/solid";
 
 const links = [
-    { href: '/', text: 'Inicio', icon: <HomeIcon className="w-4 h-4" /> },
-    { href: '/perfil', text: 'Perfil', icon: <UserIcon className="w-4 h-4" />},
+    { href: '/inicio', text: 'Inicio', icon: <HomeIcon className="w-4 h-4" /> },
+    { href: '/perfiles', text: 'Perfiles', icon: <UserIcon className="w-4 h-4" />},
     { href: '/ventas', text: 'Ventas', icon: <UserIcon className="w-4 h-4" />},
     { href: '/libros', text: 'Libros', icon: <BookOpenIcon className="w-4 h-4" /> },
     { href: '/envios', text: 'Envios', icon: <TruckIcon className="w-4 h-4" /> },

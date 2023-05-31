@@ -20,6 +20,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import Books from './Books'
 import BooksAlphillia from './BooksAlphillia'
+import { da } from 'date-fns/locale'
 
 export default function ListaTable() {
     const [alphilliaBooks, setAlphilliaBooks] = useState([])
@@ -63,12 +64,14 @@ export default function ListaTable() {
             if (Array.isArray(response.data.data)) {
                 const booksData = response.data.data.map((book) => {
                     const precio = parseFloat(book.precio)
+                    
                     return {
                         ...book,
                         precio: Number.isFinite(precio) ? precio : 0,
                     }
                 })
                 setBooks(booksData)
+                console.log(response.data)
             } else {
                 console.log(
                     'La respuesta de la API no es un array válido:',
@@ -91,6 +94,7 @@ export default function ListaTable() {
             const response = await axios.get('http://localhost:9001/books')
             if (Array.isArray(response.data)) {
                 setAlphilliaBooks(response.data)
+                console.log(response.data)
             } else {
                 console.log(
                     'La respuesta de la API no es un array válido:',
@@ -171,15 +175,15 @@ export default function ListaTable() {
     }
 
     const filterAlphilliaBooks = () => {
-      return alphilliaBooks.filter((book) => {
-          const { titulo, isbn } = book;
-          const lowerCaseSearchTerm = alphilliaSearchTerm.toLowerCase();
-          return (
-              titulo?.toLowerCase().includes(lowerCaseSearchTerm) ||
-              isbn?.toString().toLowerCase().includes(lowerCaseSearchTerm)
-          );
-      });
-  };
+        return alphilliaBooks.filter((book) => {
+            const { titulo, isbn } = book
+            const lowerCaseSearchTerm = alphilliaSearchTerm.toLowerCase()
+            return (
+                titulo?.toLowerCase().includes(lowerCaseSearchTerm) ||
+                isbn?.toString().toLowerCase().includes(lowerCaseSearchTerm)
+            )
+        })
+    }
 
     const TABLE_HEAD = ['Libro', 'isbn', 'Stock', 'Precio', 'Editar']
 
@@ -396,8 +400,8 @@ export default function ListaTable() {
                         </div>
                     </div>
                 </CardHeader>
-                <CardBody className="overflow-scroll px-0">
-                    <table className="w-full min-w-max table-auto text-left">
+                <CardBody className="overflow-scroll px-0  style={{ maxHeight: '400px' }}">
+                    <table className="w-full min-w-max table-auto text-left ">
                         <thead>
                             <tr>
                                 {TABLE_HEAD.map((head) => (
@@ -518,7 +522,9 @@ export default function ListaTable() {
                             </tr>
                         </thead>
                         <tbody>
-                            <BooksAlphillia alphilliaBooks={filterAlphilliaBooks()} />
+                            <BooksAlphillia
+                                alphilliaBooks={filterAlphilliaBooks()}
+                            />
                         </tbody>
                     </table>
                 </CardBody>

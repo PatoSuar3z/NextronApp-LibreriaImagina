@@ -42,7 +42,7 @@ const Login = (props) => {
             </Link>
           </div>
         </div>
-        <Link href="/perfil">
+        <Link href="/inicio">
           <button className="py-2 px-6 bg-[#593535] border rounded-xl hover:scale-110 duration-300">
             Perfil
           </button>
