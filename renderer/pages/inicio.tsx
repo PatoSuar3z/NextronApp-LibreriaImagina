@@ -1,12 +1,13 @@
 import ProfileLayout from "../components/ProfileLayout"
+import UserProfile from "../components/UserProfile"
 
 
-const perfil = () => {
+const inicio = () => {
   return (
     <ProfileLayout>
-      
+      <UserProfile />
     </ProfileLayout>
   )
 }
 
-export default perfil
+export default inicio
