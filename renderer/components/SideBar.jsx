@@ -1,8 +1,8 @@
 import { forwardRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import links from '@/data/links'
-import { useDark } from '@/hooks/useDark'
+import links from '../data/links'
+import { useDark } from '../hooks/useDark'
 
 const colors = {
   light: {
