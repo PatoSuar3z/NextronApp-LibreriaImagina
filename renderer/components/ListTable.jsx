@@ -9,18 +9,16 @@ import {
     Typography,
     Button,
     CardBody,
-    Chip,
     CardFooter,
     Avatar,
     IconButton,
-    Tooltip,
     Input,
 } from '@material-tailwind/react'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import Books from './Books'
 import BooksAlphillia from './BooksAlphillia'
-import { da } from 'date-fns/locale'
+import { Toaster, toast } from 'sonner'
 
 export default function ListaTable() {
     const [alphilliaBooks, setAlphilliaBooks] = useState([])
@@ -35,24 +33,11 @@ export default function ListaTable() {
         imagen: '',
         genero: '',
         idioma: '',
-        fecha_publicacion: '',
+        fecha_publicacion: '1/1/2021',
         descripcion: '',
         stock: '',
     })
-    const [validation, setValidation] = useState({
-        isbn: true,
-        titulo: true,
-        autor: true,
-        editorial: true,
-        paginas: true,
-        precio: true,
-        imagen: true,
-        genero: true,
-        idioma: true,
-        fecha_publicacion: true,
-        descripcion: true,
-        stock: true,
-    })
+
     const [searchTerm, setSearchTerm] = useState('')
     const [alphilliaSearchTerm, setAlphilliaSearchTerm] = useState('')
 
@@ -64,7 +49,7 @@ export default function ListaTable() {
             if (Array.isArray(response.data.data)) {
                 const booksData = response.data.data.map((book) => {
                     const precio = parseFloat(book.precio)
-                    
+
                     return {
                         ...book,
                         precio: Number.isFinite(precio) ? precio : 0,
@@ -110,56 +95,36 @@ export default function ListaTable() {
         fetchAlphilliaBooks()
     }, [])
 
+    ///REGISTRAR LIBRO
     const addBook = async () => {
-        // Validar los campos antes de agregar el libro
-        const newValidation = {
-            isbn: newBook.isbn.trim() !== '',
-            titulo: newBook.titulo.trim() !== '',
-            autor: newBook.autor.trim() !== '',
-            editorial: newBook.editorial.trim() !== '',
-            paginas: newBook.paginas.trim() !== '',
-            precio: newBook.precio.trim() !== '',
-            imagen: newBook.imagen.trim() !== '',
-            genero: newBook.genero.trim() !== '',
-            idioma: newBook.idioma.trim() !== '',
-            fecha_publicacion: newBook.fecha_publicacion.trim() !== '',
-            descripcion: newBook.descripcion.trim() !== '',
-            stock: newBook.stock.trim() !== '',
+        try {
+            const response = await axios.post(
+                'http://localhost:5000/api/books',
+                newBook
+            )
+            console.log(response.data)
+            toast.success('Libro Registrado')
+            fetchBooks()
+        } catch (error) {
+            console.log(error)
+            console.log(error.response)
+            console.log(newBook)
         }
+    }
 
-        setValidation(newValidation)
+    ///ELIMINAR LIBRO
 
-        // Verificar si hay algún campo no válido
-        const isValid = Object.values(newValidation).every((valid) => valid)
-
-        if (isValid) {
-            try {
-                const response = await axios.post(
-                    'http://localhost:5000/api/books',
-                    JSON.stringify(newBook)
-                )
-                console.log(response.data)
-                // Actualizar la lista de libros después de agregar uno nuevo
-                fetchBooks()
-                // Reiniciar los valores del formulario
-                setNewBook({
-                    isbn: '',
-                    titulo: '',
-                    autor: '',
-                    editorial: '',
-                    paginas: '',
-                    precio: '',
-                    imagen: '',
-                    genero: '',
-                    idioma: '',
-                    fecha_publicacion: '',
-                    descripcion: '',
-                    stock: '',
-                })
-            } catch (error) {
-                console.log(error)
-                console.log(error.response)
-            }
+    const deleteBook = async (id) => {
+        try {
+            const response = await axios.delete(
+                `http://localhost:5000/api/books/${id}`
+            )
+            console.log(response.data)
+            toast.error('Libro Eliminado')
+            fetchBooks()
+        } catch (error) {
+            console.log(error)
+            console.log(error.response)
         }
     }
 
@@ -187,6 +152,8 @@ export default function ListaTable() {
 
     const TABLE_HEAD = ['Libro', 'isbn', 'Stock', 'Precio', 'Editar']
 
+    const TABLE_HEAD_ALPHILLIA = ['Libro', 'isbn', 'Stock', 'Precio']
+
     return (
         <div>
             <Card>
@@ -204,162 +171,200 @@ export default function ListaTable() {
                     </div>
                 </CardHeader>
                 <CardBody>
-                    <div className="flex flex-col gap-2">
-                        <Typography variant="h6" color="blue-gray">
-                            ISBN
-                        </Typography>
-                        <Input
-                            value={newBook.isbn}
-                            onChange={(e) =>
-                                setNewBook({ ...newBook, isbn: e.target.value })
-                            }
-                            error={!validation.isbn}
-                        />
-                        <Typography variant="h6" color="blue-gray">
-                            Titulo
-                        </Typography>
-                        <Input
-                            value={newBook.titulo}
-                            onChange={(e) =>
-                                setNewBook({
-                                    ...newBook,
-                                    titulo: e.target.value,
-                                })
-                            }
-                            error={!validation.titulo}
-                        />
-                        <Typography variant="h6" color="blue-gray">
-                            Autor
-                        </Typography>
-                        <Input
-                            value={newBook.autor}
-                            onChange={(e) =>
-                                setNewBook({
-                                    ...newBook,
-                                    autor: e.target.value,
-                                })
-                            }
-                            error={!validation.autor}
-                        />
-                        <Typography variant="h6" color="blue-gray">
-                            Editorial
-                        </Typography>
-                        <Input
-                            value={newBook.editorial}
-                            onChange={(e) =>
-                                setNewBook({
-                                    ...newBook,
-                                    editorial: e.target.value,
-                                })
-                            }
-                            error={!validation.editorial}
-                        />
-                        <Typography variant="h6" color="blue-gray">
-                            Páginas
-                        </Typography>
-                        <Input
-                            value={newBook.paginas}
-                            onChange={(e) =>
-                                setNewBook({
-                                    ...newBook,
-                                    paginas: e.target.value,
-                                })
-                            }
-                            error={!validation.paginas}
-                        />
-                        <Typography variant="h6" color="blue-gray">
-                            Precio
-                        </Typography>
-                        <Input
-                            value={newBook.precio}
-                            onChange={(e) =>
-                                setNewBook({
-                                    ...newBook,
-                                    precio: e.target.value,
-                                })
-                            }
-                            error={!validation.precio}
-                        />
-                        <Typography variant="h6" color="blue-gray">
-                            Imagen
-                        </Typography>
-                        <Input
-                            placeholder="URL de la imagen"
-                            value={newBook.imagen}
-                            onChange={(e) =>
-                                setNewBook({
-                                    ...newBook,
-                                    imagen: e.target.value,
-                                })
-                            }
-                            error={!validation.imagen}
-                        />
-                        <Typography variant="h6" color="blue-gray">
-                            Género
-                        </Typography>
-                        <Input
-                            value={newBook.genero}
-                            onChange={(e) =>
-                                setNewBook({
-                                    ...newBook,
-                                    genero: e.target.value,
-                                })
-                            }
-                            error={!validation.genero}
-                        />
-                        <Typography variant="h6" color="blue-gray">
-                            Idioma
-                        </Typography>
-                        <Input
-                            value={newBook.idioma}
-                            onChange={(e) =>
-                                setNewBook({
-                                    ...newBook,
-                                    idioma: e.target.value,
-                                })
-                            }
-                            error={!validation.idioma}
-                        />
-                        <Typography variant="h6" color="blue-gray">
-                            Fecha de Publicación
-                        </Typography>
-                        <Input
-                            value={newBook.fecha_publicacion}
-                            onChange={(e) =>
-                                setNewBook({
-                                    ...newBook,
-                                    fecha_publicacion: e.target.value,
-                                })
-                            }
-                            error={!validation.fecha_publicacion}
-                        />
-                        <Typography variant="h6" color="blue-gray">
-                            Descripción
-                        </Typography>
-                        <Input
-                            value={newBook.descripcion}
-                            onChange={(e) =>
-                                setNewBook({
-                                    ...newBook,
-                                    descripcion: e.target.value,
-                                })
-                            }
-                            error={!validation.descripcion}
-                        />
-                        <Typography variant="h6" color="blue-gray">
-                            Stock
-                        </Typography>
-                        <Input
-                            value={newBook.stock}
-                            onChange={(e) =>
-                                setNewBook({
-                                    ...newBook,
-                                    stock: e.target.value,
-                                })
-                            }
-                            error={!validation.stock}
-                        />
-                        <Button onClick={addBook} color="blue">
+                    <div className="flex flex-col">
+                        <div className="flex flex-row">
+                            <div className="flex flex-col w-1/2 mr-2">
+                                <Typography variant="h6">ISBN</Typography>
+                                <input
+                                    type="text"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                    onChange={(e) =>
+                                        setNewBook({
+                                            ...newBook,
+                                            isbn: e.target.value,
+                                        })
+                                    }
+                                ></input>
+                            </div>
+                            <div className="flex flex-col w-1/2 ml-2">
+                                <Typography variant="h6">Titulo</Typography>
+
+                                <input
+                                    type="text"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                    onChange={(e) =>
+                                        setNewBook({
+                                            ...newBook,
+                                            titulo: e.target.value,
+                                        })
+                                    }
+                                ></input>
+                            </div>
+                        </div>
+                        <div className="flex flex-row">
+                            <div className="flex flex-col w-1/2 mr-2">
+                                <Typography variant="h6">Autor</Typography>
+                                <input
+                                    type="text"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                    onChange={(e) =>
+                                        setNewBook({
+                                            ...newBook,
+                                            autor: e.target.value,
+                                        })
+                                    }
+                                ></input>
+                            </div>
+                            <div className="flex flex-col w-1/2 ml-2">
+                                <Typography
+                                    variant="h6"
+                                    className="text-gray-950"
+                                >
+                                    Editorial
+                                </Typography>
+                                <input
+                                    type="text"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                    onChange={(e) =>
+                                        setNewBook({
+                                            ...newBook,
+                                            editorial: e.target.value,
+                                        })
+                                    }
+                                ></input>
+                            </div>
+                        </div>
+                        <div className="flex flex-row">
+                            <div className="flex flex-col w-1/2 mr-2">
+                                <Typography variant="h6">Paginas</Typography>
+                                <input
+                                    type="number"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                    onChange={(e) =>
+                                        setNewBook({
+                                            ...newBook,
+                                            paginas: e.target.value,
+                                        })
+                                    }
+                                ></input>
+                            </div>
+                            <div className="flex flex-col w-1/2 ml-2">
+                                <Typography variant="h6">Precio</Typography>
+
+                                <input
+                                    type="number"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                    onChange={(e) =>
+                                        setNewBook({
+                                            ...newBook,
+                                            precio: e.target.value,
+                                        })
+                                    }
+                                ></input>
+                            </div>
+                        </div>
+                        <div className="flex flex-row">
+                            <div className="flex flex-col w-1/2 mr-2">
+                                <Typography variant="h6">Imagen</Typography>
+                                <input
+                                    type="url"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                    placeholder="URL Imagen"
+                                    onChange={(e) =>
+                                        setNewBook({
+                                            ...newBook,
+                                            imagen: e.target.value,
+                                        })
+                                    }
+                                ></input>
+                            </div>
+                            <div className="flex flex-col w-1/2 ml-2">
+                                <Typography variant="h6">Genero</Typography>
+
+                                <select
+                                    id="userType"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                    onChange={(e) =>
+                                        setNewBook({
+                                            ...newBook,
+                                            genero: e.target.value,
+                                        })
+                                    }
+                                >
+                                    <option value="">Seleccionar Genero</option>
+                                    <option value="Ciencia Ficcion">
+                                        Ciencia Ficcion
+                                    </option>
+                                    <option value="Fantasia">Fantasia</option>
+                                    <option value="Accion">Accion</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="flex flex-row">
+                            <div className="flex flex-col w-1/2 mr-2">
+                                <Typography variant="h6">Idioma</Typography>
+                                <select
+                                    id="userType"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                    onChange={(e) =>
+                                        setNewBook({
+                                            ...newBook,
+                                            idioma: e.target.value,
+                                        })
+                                    }
+                                >
+                                    <option value="">Seleccionar Idioma</option>
+                                    <option value="Ciencia Ficcion">
+                                        Español
+                                    </option>
+                                    <option value="Fantasia">Ingles</option>
+                                    <option value="Accion">Frances</option>
+                                </select>
+                            </div>
+                            <div className="flex flex-col w-1/2 ml-2">
+                                <Typography variant="h6">
+                                    Fecha Publicacion
+                                </Typography>
+
+                                <input
+                                    type="date"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                ></input>
+                            </div>
+                        </div>
+                        <div className="flex flex-row">
+                            <div className="flex flex-col w-1/2 mr-2">
+                                <Typography variant="h6">Stock</Typography>
+                                <input
+                                    type="number"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                    onClick={(e) =>
+                                        setNewBook({
+                                            ...newBook,
+                                            stock: e.target.value,
+                                        })
+                                    }
+                                ></input>
+                            </div>
+                            <div className="flex flex-col w-1/2 ml-2">
+                                <Typography variant="h6">Descipcion</Typography>
+                                <input
+                                    type="text"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                    onChange={(e) =>
+                                        setNewBook({
+                                            ...newBook,
+                                            descripcion: e.target.value,
+                                        })
+                                    }
+                                ></input>
+                            </div>
+                        </div>
+                        <Button
+                            onClick={(e) => addBook()}
+                            color="blue"
+                            className="mt-4"
+                        >
                             Agregar
                         </Button>
                     </div>
@@ -421,7 +426,80 @@ export default function ListaTable() {
                             </tr>
                         </thead>
                         <tbody>
-                            <Books books={filterBooks()} />
+                            {books.map((book) => (
+                                <tr key={book.id}>
+                                    <td>
+                                        <div className="flex items-center gap-3">
+                                            <Avatar
+                                                src={book.imagen}
+                                                width={60}
+                                                alt={book.titulo}
+                                                size="md"
+                                                className="border border-blue-gray-50 bg-blue-gray-50/50 object-contain p-1"
+                                            />
+                                            <Typography
+                                                variant="small"
+                                                color="blue-gray"
+                                                className="font-bold"
+                                            >
+                                                {book.titulo}
+                                            </Typography>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-normal"
+                                        >
+                                            {book.isbn}
+                                        </Typography>
+                                    </td>
+                                    <td>
+                                        <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-normal"
+                                        >
+                                            {book.stock}/100
+                                        </Typography>
+                                    </td>
+                                    <td>
+                                        <div className="w-max">
+                                            <Typography
+                                                variant="small"
+                                                color="blue-gray"
+                                                className="font-normal"
+                                            >
+                                                ${book.precio}
+                                            </Typography>
+                                        </div>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography
+                                            as="a"
+                                            href="#"
+                                            variant="small"
+                                            color="blue"
+                                            className="font-medium"
+                                            onClick={() => deleteBook(book.id)}
+                                        >
+                                            Eliminar
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography
+                                            as="a"
+                                            href="#"
+                                            variant="small"
+                                            color="blue"
+                                            className="font-medium"
+                                        >
+                                            Edit
+                                        </Typography>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </CardBody>
@@ -505,7 +583,7 @@ export default function ListaTable() {
                     <table className="w-full min-w-max table-auto text-left">
                         <thead>
                             <tr>
-                                {TABLE_HEAD.map((head) => (
+                                {TABLE_HEAD_ALPHILLIA.map((head) => (
                                     <th
                                         key={head}
                                         className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
@@ -522,9 +600,57 @@ export default function ListaTable() {
                             </tr>
                         </thead>
                         <tbody>
-                            <BooksAlphillia
-                                alphilliaBooks={filterAlphilliaBooks()}
-                            />
+                            {alphilliaBooks.map((book) => (
+                                <tr key={book.id}>
+                                    <td>
+                                        <div className="flex items-center gap-3">
+                                            <Avatar
+                                                src={book.foto}
+                                                width={60}
+                                                alt={book.titulo}
+                                                size="md"
+                                                className="border border-blue-gray-50 bg-blue-gray-50/50 object-contain p-1"
+                                            />
+                                            <Typography
+                                                variant="small"
+                                                color="blue-gray"
+                                                className="font-bold"
+                                            >
+                                                {book.titulo}
+                                            </Typography>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-normal"
+                                        >
+                                            {book.isbn}
+                                        </Typography>
+                                    </td>
+                                    <td>
+                                        <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-normal ml-5"
+                                        >
+                                            {book.stock}
+                                        </Typography>
+                                    </td>
+                                    <td>
+                                        <div className="w-max">
+                                            <Typography
+                                                variant="small"
+                                                color="blue-gray"
+                                                className="font-normal ml-4"
+                                            >
+                                                ${book.precio}
+                                            </Typography>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </CardBody>
@@ -567,6 +693,8 @@ export default function ListaTable() {
                     </Button>
                 </CardFooter>
             </Card>
+
+            <Toaster position="bottom-right" richColors />
         </div>
     )
 }
