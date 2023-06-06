@@ -1,10 +1,10 @@
 import ProfileLayout from "../components/ProfileLayout"
-import UserProfile from "../components/UserProfile"
+import UserList from "../components/UserList"
 
 const perfil = () => {
   return (
     <ProfileLayout>
-      
+      <UserList />
     </ProfileLayout>
   )
 }
