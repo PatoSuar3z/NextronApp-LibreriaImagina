@@ -28,25 +28,7 @@ const Login = (props) => {
 
           {/* Formulario */}
           <LoginForm onLogin={props.onLogin} />
-
-          <p className="mt-5 text-xs text-[#593535] border-b border-[#593535] py-4 ">
-            ¿Olvidó su contraseña?
-          </p>
-
-          <div className="mt-3 text-xs flex justify-between items-center">
-            <p className="font-bold text-[#593535]">¿Aún no tienes cuenta? </p>
-            <Link href="/register">
-              <button className="py-2 px-6 bg-[#593535] border rounded-xl hover:scale-110 duration-300">
-                Crear cuenta
-              </button>
-            </Link>
           </div>
-        </div>
-        <Link href="/inicio">
-          <button className="py-2 px-6 bg-[#593535] border rounded-xl hover:scale-110 duration-300">
-            Perfil
-          </button>
-        </Link>
         <div className="md:block hidden w-1/2">
           <img className="rounded-2xl" src="/img/li-login.png" alt="" />
         </div>
