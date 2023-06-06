@@ -42,11 +42,7 @@ const BooksAlphillia = ({ alphilliaBooks }) => {
                             </Typography>
                         </div>
                     </td>
-                    <td >
 
-                        <PencilIcon className="h-4 w-4" />
-
-                    </td>
                 </tr>
             ))}
         </>
