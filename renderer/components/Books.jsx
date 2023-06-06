@@ -1,12 +1,13 @@
 import React from 'react'
-import { PencilIcon } from "@heroicons/react/24/solid";
-import {
-    Typography,
-    Avatar,
-    IconButton,
-} from "@material-tailwind/react";
+import { PencilIcon } from '@heroicons/react/24/solid'
+import { Typography, Avatar, IconButton } from '@material-tailwind/react'
+import axios from 'axios'
 
 const Books = ({ books }) => {
+
+        
+
+
     return (
         <>
             {books.map((book) => (
@@ -20,32 +21,66 @@ const Books = ({ books }) => {
                                 size="md"
                                 className="border border-blue-gray-50 bg-blue-gray-50/50 object-contain p-1"
                             />
-                            <Typography variant="small" color="blue-gray" className="font-bold">
+                            <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-bold"
+                            >
                                 {book.titulo}
                             </Typography>
                         </div>
                     </td>
-                    <td >
-                        <Typography variant="small" color="blue-gray" className="font-normal">
+                    <td>
+                        <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                        >
                             {book.isbn}
                         </Typography>
                     </td>
-                    <td >
-                        <Typography variant="small" color="blue-gray" className="font-normal">
+                    <td>
+                        <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                        >
                             {book.stock}/100
                         </Typography>
                     </td>
-                    <td >
+                    <td>
                         <div className="w-max">
-                            <Typography variant="small" color="blue-gray" className="font-normal">
+                            <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal"
+                            >
                                 ${book.precio}
                             </Typography>
                         </div>
                     </td>
-                    <td >
-
-                        <PencilIcon className="h-4 w-4" />
-
+                    <td className="p-4">
+                        <Typography
+                            as="a"
+                            href="#"
+                            variant="small"
+                            color="blue"
+                            className="font-medium"
+                            onClick={() => deleteBook(book.id)}
+                        >
+                            Eliminar
+                        </Typography>
+                    </td>
+                    <td className="p-4">
+                        <Typography
+                            as="a"
+                            href="#"
+                            variant="small"
+                            color="blue"
+                            className="font-medium"
+                        >
+                            Edit
+                        </Typography>
                     </td>
                 </tr>
             ))}
